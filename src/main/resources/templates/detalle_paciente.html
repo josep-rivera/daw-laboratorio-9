@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del Paciente</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<h1>Sistema de Gestión de Pacientes</h1>
+<a href="/pacientes">Inicio</a> | <a href="/pacientes/nuevo">Nuevo Paciente</a>
+<hr>
+
+<h2>Detalle del Paciente</h2>
+
+<a href="/pacientes"><button>⬅️ Volver a la lista</button></a>
+
+<hr>
+
+<h3>Datos Personales</h3>
+<table>
+    <tr><th>ID Paciente:</th><td th:text="${paciente.idPaciente}"></td></tr>
+    <tr><th>DNI:</th><td th:text="${paciente.dni}"></td></tr>
+    <tr><th>Nombres:</th><td th:text="${paciente.nombres}"></td></tr>
+    <tr><th>Apellidos:</th><td th:text="${paciente.apellidos}"></td></tr>
+    <tr><th>Fecha de Nacimiento:</th><td th:text="${paciente.fechaNacimiento}"></td></tr>
+    <tr><th>Sexo:</th><td th:text="${paciente.sexo == 'M'} ? 'Masculino' : 'Femenino'"></td></tr>
+    <tr><th>Dirección:</th><td th:text="${paciente.direccion}"></td></tr>
+    <tr><th>Teléfono:</th><td th:text="${paciente.telefono}"></td></tr>
+    <tr><th>Correo:</th><td th:text="${paciente.correo}"></td></tr>
+    <tr><th>Estado:</th><td th:text="${paciente.estado}"></td></tr>
+    <tr><th>Fecha de Registro:</th><td th:text="${paciente.fechaRegistro}"></td></tr>
+</table>
+
+<br>
+<a th:href="@{/pacientes/editar/{id}(id=${paciente.idPaciente})}"><button>✏️ Editar Paciente</button></a>
+<hr>
+
+<h3>Historias Clínicas</h3>
+<table>
+    <thead>
+    <tr>
+        <th>ID Historia</th>
+        <th>Fecha Apertura</th>
+        <th>Observaciones</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${historias == null or historias.isEmpty()}">
+        <td colspan="4">No hay historias clínicas registradas</td>
+    </tr>
+    <tr th:each="historia : ${historias}">
+        <td th:text="${historia.idHistoria}"></td>
+        <td th:text="${historia.fechaApertura}"></td>
+        <td th:text="${historia.observaciones}"></td>
+        <td>
+            <a th:href="@{/pacientes/historia/{id}/antecedentes(id=${historia.idHistoria})}">
+                <button>📋 Ver Antecedentes</button>
+            </a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Paciente</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<h1>Sistema de Gestión de Pacientes</h1>
+<a href="/pacientes">Inicio</a> | <a href="/pacientes/nuevo">Nuevo Paciente</a>
+<hr>
+
+<h2 th:text="${titulo}">Formulario de Paciente</h2>
+
+<div th:if="${error}" class="error">
+    ✗ <span th:text="${error}"></span>
+</div>
+
+<form th:action="@{${accion == 'nuevo' ? '/pacientes/guardar' : '/pacientes/actualizar/' + paciente.idPaciente}}"
+      th:object="${paciente}"
+      method="post">
+
+    <fieldset>
+        <legend>Datos Personales</legend>
+
+        <label>DNI: *</label>
+        <input type="text" th:field="*{dni}" placeholder="Ingrese DNI" th:readonly="${accion == 'editar'}" required>
+        <br><br>
+
+        <label>Nombres: *</label>
+        <input type="text" th:field="*{nombres}" placeholder="Ingrese nombres" required>
+        <br><br>
+
+        <label>Apellidos: *</label>
+        <input type="text" th:field="*{apellidos}" placeholder="Ingrese apellidos" required>
+        <br><br>
+
+        <label>Fecha de Nacimiento: *</label>
+        <input type="date" th:field="*{fechaNacimiento}" required>
+        <br><br>
+
+        <label>Sexo: *</label>
+        <select th:field="*{sexo}" required>
+            <option value="">-- Seleccione --</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+        </select>
+        <br><br>
+    </fieldset>
+
+    <br>
+
+    <fieldset>
+        <legend>Datos de Contacto</legend>
+
+        <label>Dirección:</label>
+        <input type="text" th:field="*{direccion}" placeholder="Ingrese dirección">
+        <br><br>
+
+        <label>Teléfono:</label>
+        <input type="text" th:field="*{telefono}" placeholder="Ingrese teléfono">
+        <br><br>
+
+        <label>Correo:</label>
+        <input type="email" th:field="*{correo}" placeholder="ejemplo@correo.com">
+        <br><br>
+    </fieldset>
+
+    <br>
+
+    <button type="submit">💾 Guardar</button>
+    <a href="/pacientes"><button type="button">❌ Cancelar</button></a>
+</form>
+</body>
+</html>

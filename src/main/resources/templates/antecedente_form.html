@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario Antecedente Médico</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<h1>Sistema de Gestión de Pacientes</h1>
+<a href="/pacientes">Inicio</a> | <a href="/pacientes/nuevo">Nuevo Paciente</a>
+<hr>
+
+<h2>Registrar Antecedente Médico</h2>
+
+<div th:if="${error}" class="error">
+    ✗ <span th:text="${error}"></span>
+</div>
+
+<p><strong>Historia Clínica ID:</strong> <span th:text="${idHistoria}"></span></p>
+
+<hr>
+
+<form th:action="@{/pacientes/historia/{id}/antecedentes/guardar(id=${idHistoria})}"
+      th:object="${antecedente}" method="post">
+
+    <fieldset>
+        <legend>Datos del Antecedente</legend>
+
+        <label>Tipo de Antecedente: *</label>
+        <select th:field="*{tipo}" required>
+            <option value="">-- Seleccione --</option>
+            <option value="Alergia">Alergia</option>
+            <option value="Enfermedad Crónica">Enfermedad Crónica</option>
+            <option value="Cirugía">Cirugía</option>
+            <option value="Medicamento">Medicamento</option>
+            <option value="Familiar">Familiar</option>
+            <option value="Otro">Otro</option>
+        </select>
+        <br><br>
+
+        <label>Descripción: *</label><br>
+        <textarea th:field="*{descripcion}" rows="5" cols="50" placeholder="Describa el antecedente médico" required></textarea>
+        <br><br>
+    </fieldset>
+
+    <br>
+
+    <button type="submit">💾 Guardar</button>
+    <a th:href="@{/pacientes/historia/{id}/antecedentes(id=${idHistoria})}">
+        <button type="button">❌ Cancelar</button>
+    </a>
+</form>
+</body>
+</html>

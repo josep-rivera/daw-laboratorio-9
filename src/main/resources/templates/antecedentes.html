@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Antecedentes Médicos</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<h1>Sistema de Gestión de Pacientes</h1>
+<a href="/pacientes">Inicio</a> | <a href="/pacientes/nuevo">Nuevo Paciente</a>
+<hr>
+
+<h2>Antecedentes Médicos</h2>
+
+<div th:if="${success}" class="success">
+    ✓ <span th:text="${success}"></span>
+</div>
+
+<a href="/pacientes"><button>⬅️ Volver a Pacientes</button></a>
+<a th:href="@{/pacientes/historia/{id}/antecedentes/nuevo(id=${idHistoria})}">
+    <button>➕ Registrar Nuevo Antecedente</button>
+</a>
+
+<hr>
+
+<p><strong>Historia Clínica ID:</strong> <span th:text="${idHistoria}"></span></p>
+<hr>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Descripción</th>
+        <th>Fecha Registro</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${antecedentes == null or antecedentes.isEmpty()}">
+        <td colspan="4">No hay antecedentes médicos registrados</td>
+    </tr>
+    <tr th:each="antecedente : ${antecedentes}">
+        <td th:text="${antecedente.idAntecedente}"></td>
+        <td th:text="${antecedente.tipo}"></td>
+        <td th:text="${antecedente.descripcion}"></td>
+        <td th:text="${antecedente.fechaRegistro}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Pacientes</title>
+    <link rel="stylesheet" th:href="@{/css/estilos.css}">
+</head>
+<body>
+<h1>Sistema de Gestión de Pacientes</h1>
+<a href="/pacientes">Inicio</a> | <a href="/pacientes/nuevo">Nuevo Paciente</a>
+<hr>
+
+<h2>Lista de Pacientes</h2>
+
+<div th:if="${success}" class="success">
+    ✓ <span th:text="${success}"></span>
+</div>
+
+<div th:if="${error}" class="error">
+    ✗ <span th:text="${error}"></span>
+</div>
+
+<form action="/pacientes/buscar" method="get">
+    <label>Buscar por DNI:</label>
+    <input type="text" name="dni" placeholder="Ingrese DNI">
+    <button type="submit">Buscar</button>
+</form>
+
+<hr>
+
+<a href="/pacientes/nuevo"><button>➕ Registrar Nuevo Paciente</button></a>
+
+<hr>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>DNI</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Fecha Nacimiento</th>
+        <th>Sexo</th>
+        <th>Teléfono</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${pacientes == null or pacientes.isEmpty()}">
+        <td colspan="9">No hay pacientes registrados</td>
+    </tr>
+    <tr th:each="paciente : ${pacientes}">
+        <td th:text="${paciente.idPaciente}"></td>
+        <td th:text="${paciente.dni}"></td>
+        <td th:text="${paciente.nombres}"></td>
+        <td th:text="${paciente.apellidos}"></td>
+        <td th:text="${paciente.fechaNacimiento}"></td>
+        <td th:text="${paciente.sexo}"></td>
+        <td th:text="${paciente.telefono}"></td>
+        <td th:text="${paciente.estado}"></td>
+        <td>
+            <a th:href="@{/pacientes/detalle/{id}(id=${paciente.idPaciente})}"><button>👁️ Ver</button></a>
+            <a th:href="@{/pacientes/editar/{id}(id=${paciente.idPaciente})}"><button>✏️ Editar</button></a>
+            <a th:href="@{/pacientes/desactivar/{id}(id=${paciente.idPaciente})}" onclick="return confirm('¿Desactivar paciente?')"><button>🗑️ Desactivar</button></a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
