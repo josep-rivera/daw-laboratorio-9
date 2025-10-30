@@ -3,33 +3,24 @@ package com.rivera.gestion_de_pacientes.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "antecedente_medico")
+@Document(collection = "antecedentes")
 public class AntecedenteMedico {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_antecedente")
-    private Long idAntecedente;
+    private String idAntecedente;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_historia", nullable = false)
-    @JsonIgnoreProperties({"antecedentes", "paciente", "hibernateLazyInitializer", "handler"})
-    private HistoriaClinica historiaClinica;
+    private String historiaId;
 
-    @Column(nullable = false, length = 50)
     private String tipo;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(name = "fecha_registro")
     private LocalDateTime fechaRegistro = LocalDateTime.now();
 }

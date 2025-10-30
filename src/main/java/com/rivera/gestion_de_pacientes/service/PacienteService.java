@@ -8,7 +8,6 @@ import com.rivera.gestion_de_pacientes.repository.HistoriaClinicaRepository;
 import com.rivera.gestion_de_pacientes.repository.AntecedenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,14 +24,11 @@ public class PacienteService {
     @Autowired
     private AntecedenteRepository antecedenteRepository;
 
-    @Transactional
     public Paciente registrarPaciente(Paciente paciente) {
-        // Validar DNI único
         if (pacienteRepository.findByDni(paciente.getDni()).isPresent()) {
             throw new RuntimeException("Ya existe un paciente con ese DNI");
         }
 
-        // Establecer valores por defecto
         if (paciente.getEstado() == null || paciente.getEstado().isEmpty()) {
             paciente.setEstado("ACTIVO");
         }
@@ -40,12 +36,10 @@ public class PacienteService {
             paciente.setFechaRegistro(LocalDateTime.now());
         }
 
-        // Guardar paciente
         Paciente pacienteGuardado = pacienteRepository.save(paciente);
 
-        // Crear automáticamente la historia clínica
         HistoriaClinica historia = new HistoriaClinica();
-        historia.setPaciente(pacienteGuardado);
+        historia.setPacienteId(pacienteGuardado.getIdPaciente());
         historia.setFechaApertura(LocalDate.now());
         historia.setObservaciones("Historia clínica generada automáticamente");
         historiaRepository.save(historia);
@@ -53,38 +47,23 @@ public class PacienteService {
         return pacienteGuardado;
     }
 
-    @Transactional(readOnly = true)
     public List<Paciente> listarPacientes() {
         return pacienteRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public Paciente buscarPorId(Long id) {
-        Paciente paciente = pacienteRepository.findById(id)
+    public Paciente buscarPorId(String id) {
+        return pacienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado con ID: " + id));
-        // Forzar la carga de historias clínicas para evitar LazyInitializationException
-        if (paciente.getHistoriasClinicas() != null) {
-            paciente.getHistoriasClinicas().size();
-        }
-        return paciente;
     }
 
-    @Transactional(readOnly = true)
     public Paciente buscarPorDni(String dni) {
-        Paciente paciente = pacienteRepository.findByDni(dni)
+        return pacienteRepository.findByDni(dni)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado con DNI: " + dni));
-        // Forzar la carga de historias clínicas
-        if (paciente.getHistoriasClinicas() != null) {
-            paciente.getHistoriasClinicas().size();
-        }
-        return paciente;
     }
 
-    @Transactional
-    public Paciente actualizarPaciente(Long id, Paciente paciente) {
+    public Paciente actualizarPaciente(String id, Paciente paciente) {
         Paciente pacienteExistente = buscarPorId(id);
 
-        // Actualizar solo los campos modificables
         if (paciente.getNombres() != null) {
             pacienteExistente.setNombres(paciente.getNombres());
         }
@@ -104,38 +83,26 @@ public class PacienteService {
         return pacienteRepository.save(pacienteExistente);
     }
 
-    @Transactional
-    public void desactivarPaciente(Long id) {
+    public void desactivarPaciente(String id) {
         Paciente paciente = buscarPorId(id);
         paciente.setEstado("INACTIVO");
         pacienteRepository.save(paciente);
     }
 
-    @Transactional(readOnly = true)
     public List<Paciente> listarPacientesActivos() {
         return pacienteRepository.findByEstado("ACTIVO");
     }
 
-    @Transactional(readOnly = true)
-    public List<HistoriaClinica> obtenerHistorias(Long idPaciente) {
-        // Verificar que el paciente existe
+    public List<HistoriaClinica> obtenerHistorias(String idPaciente) {
         buscarPorId(idPaciente);
-        List<HistoriaClinica> historias = historiaRepository.findByPacienteIdPaciente(idPaciente);
-        // Forzar la carga de antecedentes para cada historia
-        for (HistoriaClinica historia : historias) {
-            if (historia.getAntecedentes() != null) {
-                historia.getAntecedentes().size();
-            }
-        }
-        return historias;
+        return historiaRepository.findByPacienteId(idPaciente);
     }
 
-    @Transactional
-    public AntecedenteMedico registrarAntecedente(Long idHistoria, AntecedenteMedico antecedente) {
-        HistoriaClinica historia = historiaRepository.findById(idHistoria)
+    public AntecedenteMedico registrarAntecedente(String idHistoria, AntecedenteMedico antecedente) {
+        historiaRepository.findById(idHistoria)
                 .orElseThrow(() -> new RuntimeException("Historia clínica no encontrada con ID: " + idHistoria));
 
-        antecedente.setHistoriaClinica(historia);
+        antecedente.setHistoriaId(idHistoria);
 
         if (antecedente.getFechaRegistro() == null) {
             antecedente.setFechaRegistro(LocalDateTime.now());
@@ -144,12 +111,10 @@ public class PacienteService {
         return antecedenteRepository.save(antecedente);
     }
 
-    @Transactional(readOnly = true)
-    public List<AntecedenteMedico> obtenerAntecedentes(Long idHistoria) {
-        // Verificar que la historia existe
+    public List<AntecedenteMedico> obtenerAntecedentes(String idHistoria) {
         historiaRepository.findById(idHistoria)
                 .orElseThrow(() -> new RuntimeException("Historia clínica no encontrada con ID: " + idHistoria));
 
-        return antecedenteRepository.findByHistoriaClinicaIdHistoria(idHistoria);
+        return antecedenteRepository.findByHistoriaId(idHistoria);
     }
 }

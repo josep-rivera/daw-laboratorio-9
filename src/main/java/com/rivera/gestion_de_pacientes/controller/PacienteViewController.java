@@ -63,7 +63,7 @@ public class PacienteViewController {
 
     // Mostrar formulario de edición
     @GetMapping("/editar/{id}")
-    public String mostrarFormularioEditar(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String mostrarFormularioEditar(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Paciente paciente = pacienteService.buscarPorId(id);
             model.addAttribute("paciente", paciente);
@@ -78,7 +78,7 @@ public class PacienteViewController {
 
     // Actualizar paciente
     @PostMapping("/actualizar/{id}")
-    public String actualizarPaciente(@PathVariable Long id,
+    public String actualizarPaciente(@PathVariable String id,
                                      @Valid @ModelAttribute("paciente") Paciente paciente,
                                      BindingResult result,
                                      RedirectAttributes redirectAttributes,
@@ -103,7 +103,7 @@ public class PacienteViewController {
 
     // Ver detalle del paciente
     @GetMapping("/detalle/{id}")
-    public String verDetalle(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+    public String verDetalle(@PathVariable String id, Model model, RedirectAttributes redirectAttributes) {
         try {
             Paciente paciente = pacienteService.buscarPorId(id);
             model.addAttribute("paciente", paciente);
@@ -118,7 +118,7 @@ public class PacienteViewController {
 
     // Desactivar paciente
     @GetMapping("/desactivar/{id}")
-    public String desactivarPaciente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String desactivarPaciente(@PathVariable String id, RedirectAttributes redirectAttributes) {
         try {
             pacienteService.desactivarPaciente(id);
             redirectAttributes.addFlashAttribute("success", "Paciente desactivado exitosamente");
@@ -130,7 +130,7 @@ public class PacienteViewController {
 
     // Ver antecedentes de una historia clínica
     @GetMapping("/historia/{idHistoria}/antecedentes")
-    public String verAntecedentes(@PathVariable Long idHistoria, Model model, RedirectAttributes redirectAttributes) {
+    public String verAntecedentes(@PathVariable String idHistoria, Model model, RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("antecedentes", pacienteService.obtenerAntecedentes(idHistoria));
             model.addAttribute("idHistoria", idHistoria);
@@ -144,7 +144,7 @@ public class PacienteViewController {
 
     // Mostrar formulario para nuevo antecedente
     @GetMapping("/historia/{idHistoria}/antecedentes/nuevo")
-    public String mostrarFormularioAntecedente(@PathVariable Long idHistoria, Model model) {
+    public String mostrarFormularioAntecedente(@PathVariable String idHistoria, Model model) {
         model.addAttribute("antecedente", new AntecedenteMedico());
         model.addAttribute("idHistoria", idHistoria);
         model.addAttribute("titulo", "Registrar Antecedente Médico");
@@ -153,7 +153,7 @@ public class PacienteViewController {
 
     // Guardar nuevo antecedente
     @PostMapping("/historia/{idHistoria}/antecedentes/guardar")
-    public String guardarAntecedente(@PathVariable Long idHistoria,
+    public String guardarAntecedente(@PathVariable String idHistoria,
                                      @Valid @ModelAttribute("antecedente") AntecedenteMedico antecedente,
                                      BindingResult result,
                                      RedirectAttributes redirectAttributes,

@@ -46,7 +46,7 @@ public class PacienteController {
 
     // Buscar por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Paciente> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Paciente> buscarPorId(@PathVariable String id) {
         try {
             Paciente paciente = pacienteService.buscarPorId(id);
             return new ResponseEntity<>(paciente, HttpStatus.OK);
@@ -68,7 +68,7 @@ public class PacienteController {
 
     // Actualizar paciente
     @PutMapping("/{id}")
-    public ResponseEntity<Paciente> actualizar(@PathVariable Long id, @Valid @RequestBody Paciente paciente) {
+    public ResponseEntity<Paciente> actualizar(@PathVariable String id, @Valid @RequestBody Paciente paciente) {
         try {
             Paciente actualizado = pacienteService.actualizarPaciente(id, paciente);
             return new ResponseEntity<>(actualizado, HttpStatus.OK);
@@ -79,7 +79,7 @@ public class PacienteController {
 
     // Desactivar paciente
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> desactivar(@PathVariable Long id) {
+    public ResponseEntity<HttpStatus> desactivar(@PathVariable String id) {
         try {
             pacienteService.desactivarPaciente(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -90,7 +90,7 @@ public class PacienteController {
 
     // Obtener historias clínicas de un paciente
     @GetMapping("/{id}/historias")
-    public ResponseEntity<List<HistoriaClinica>> obtenerHistorias(@PathVariable Long id) {
+    public ResponseEntity<List<HistoriaClinica>> obtenerHistorias(@PathVariable String id) {
         List<HistoriaClinica> historias = pacienteService.obtenerHistorias(id);
         return new ResponseEntity<>(historias, HttpStatus.OK);
     }
@@ -98,7 +98,7 @@ public class PacienteController {
     // Registrar antecedente médico
     @PostMapping("/historias/{idHistoria}/antecedentes")
     public ResponseEntity<AntecedenteMedico> registrarAntecedente(
-            @PathVariable Long idHistoria,
+            @PathVariable String idHistoria,
             @RequestBody AntecedenteMedico antecedente) {
         try {
             AntecedenteMedico nuevo = pacienteService.registrarAntecedente(idHistoria, antecedente);
@@ -110,7 +110,7 @@ public class PacienteController {
 
     // Obtener antecedentes de una historia
     @GetMapping("/historias/{idHistoria}/antecedentes")
-    public ResponseEntity<List<AntecedenteMedico>> obtenerAntecedentes(@PathVariable Long idHistoria) {
+    public ResponseEntity<List<AntecedenteMedico>> obtenerAntecedentes(@PathVariable String idHistoria) {
         List<AntecedenteMedico> antecedentes = pacienteService.obtenerAntecedentes(idHistoria);
         return new ResponseEntity<>(antecedentes, HttpStatus.OK);
     }
